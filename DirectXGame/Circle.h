@@ -16,9 +16,9 @@ class Circle
 public:
 
 	explicit Circle(
-		Vec2 size = { 0.1f, 0.1f },
+		Vec2 size = { 0.5f, 0.5f },
 		Vector3D pos = { 0.0f, 0.0f, 0.0f },
-		Vector3D pos1 = { 0.0f, 0.0f, 0.0f },
+		Vector3D pos1 = { 0.0f, 0.5f, 0.0f },
 		Vector3D color = Vector3D(1.0f, 1.0f, 1.0f));
 
 	void release() const;

@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+#include <ostream>
 
 class Vector3D
 {
@@ -80,6 +81,11 @@ public:
 		return { this->x / denominator, this->y / denominator, this->z / denominator };
 	}
 
+	friend std::ostream& operator<<(std::ostream& os, const Vector3D& vec)
+	{
+		os << "(" << vec.x << ", " << vec.y << ", " << vec.z << ")";
+		return os;
+	}
 public:
 	float x, y, z;
 };

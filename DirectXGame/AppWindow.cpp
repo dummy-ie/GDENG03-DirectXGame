@@ -32,27 +32,28 @@ AppWindow::~AppWindow()
 
 void AppWindow::onKeyDown(int key)
 {
-	/*
-	if (key == 'W')
-	{
-		m_rot_x += 3.14f*m_delta_time;
-	}
-	else if (key == 'S')
-	{
-		m_rot_x -= 3.14f*m_delta_time;
-	}
-	else if (key == 'A')
-	{
-		m_rot_y += 3.14f*m_delta_time;
-	}
-	else if (key == 'D')
-	{
-		m_rot_y -= 3.14f*m_delta_time;
-	}
-	*/
-
 	switch (key)
 	{
+	default:
+		break;
+	}
+}
+
+void AppWindow::onKeyUp(int key)
+{
+	switch (key)
+	{
+	case VK_SPACE:
+	{
+		// float randsize = randrange_float(0.1f, 1.0f);
+		// Vec2 size = { randsize, randsize };
+		// Vector3D pos = { randrange_float(-0.8f, 0.8f), randrange_float(-0.8f, 0.8f), randrange_float(-0.8f, 0.8f) };
+		//
+		// std::cout << "position: " << pos << std::endl;
+		// circleVector.emplace_back(size, pos);
+		circleVector.emplace_back();
+		break;
+	}
 	case VK_ESCAPE:
 		exit(0);
 		break;
@@ -63,23 +64,6 @@ void AppWindow::onKeyDown(int key)
 	{
 		if (!circleVector.empty())
 			circleVector.pop_back();
-		break;
-	}
-	}
-}
-
-void AppWindow::onKeyUp(int key)
-{
-	switch (key)
-	{
-	case VK_SPACE:
-	{
-		/*int randsize = randrange_float(0.1f, 1.0f);
-		Vec2 size = { randsize, randsize };
-		Vector3D pos = { randrange_float(-0.8f, 0.8f), randrange_float(-0.8f, 0.8f), randrange_float(-0.8f, 0.8f) };
-		circleVector.push_back(Circle(size, pos));*/
-		circleVector.push_back(Circle());
-		std::cout << "spacebar";
 		break;
 	}
 	default:
@@ -108,7 +92,7 @@ void AppWindow::onCreate()
 
 	cList[0] = new Cube();
 
-	circleVector.push_back(Circle());
+	circleVector.push_back(Circle({0.1f, 0.1f}, {0.5f, 0.5f, 0.0f}));
 
 	/*
 	int n = 10; // number of triangles
