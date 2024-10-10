@@ -1,4 +1,5 @@
 #include "AppWindow.h"
+#include "InputSystem.h"
 
 AppWindow* AppWindow::sharedInstance = nullptr;
 
@@ -29,6 +30,63 @@ AppWindow::~AppWindow()
 {
 }
 
+void AppWindow::onKeyDown(int key)
+{
+	/*
+	if (key == 'W')
+	{
+		m_rot_x += 3.14f*m_delta_time;
+	}
+	else if (key == 'S')
+	{
+		m_rot_x -= 3.14f*m_delta_time;
+	}
+	else if (key == 'A')
+	{
+		m_rot_y += 3.14f*m_delta_time;
+	}
+	else if (key == 'D')
+	{
+		m_rot_y -= 3.14f*m_delta_time;
+	}
+	*/
+
+	switch (key)
+	{
+	case VK_ESCAPE:
+		exit(0);
+		break;
+	case VK_DELETE:
+		circleVector.clear();
+		break;
+	case VK_BACK:
+	{
+		if (!circleVector.empty())
+			circleVector.pop_back();
+		break;
+	}
+	}
+}
+
+void AppWindow::onKeyUp(int key)
+{
+	switch (key)
+	{
+	case VK_SPACE:
+	{
+		/*int randsize = randrange_float(0.1f, 1.0f);
+		Vec2 size = { randsize, randsize };
+		Vector3D pos = { randrange_float(-0.8f, 0.8f), randrange_float(-0.8f, 0.8f), randrange_float(-0.8f, 0.8f) };
+		circleVector.push_back(Circle(size, pos));*/
+		circleVector.push_back(Circle());
+		std::cout << "spacebar";
+		break;
+	}
+	default:
+		break;
+	}
+}
+
 void AppWindow::onCreate()
 {
 	Window::onCreate();
@@ -40,6 +98,8 @@ void AppWindow::onCreate()
 	const RECT rc = this->getClientWindowRect();
 	swapChain->init(this->m_Hwnd, rc.right - rc.left, rc.bottom - rc.top);
 
+	InputSystem::get()->addListener(this);
+
 	qList[0] = new Quad(
 		{ 1.0f, 1.0f },
 		{ -0.2f, 0.2f, 0.0f },
@@ -47,6 +107,24 @@ void AppWindow::onCreate()
 		{ 1.0f, 0.0f, 0.0f });
 
 	cList[0] = new Cube();
+
+	circleVector.push_back(Circle());
+
+	/*
+	int n = 10; // number of triangles
+	SimpleVertex* vertices = malloc(sizeof(SimpleVertex) * 10 * 3); // 10 triangles, 3 verticies per triangle
+	float deltaTheta = 2*pi / n; // Change in theta for each vertex
+	for( int i = 0; i < n; i++ ) {
+		int theta = i * deltaTheta; // Theta is the angle for that triangle
+		int index = 3 * i;
+		vertices[index + 0] = SimpleVertex(0, 0, 0);
+		// Given an angle theta, cosine [cos] will give you the x coordinate,
+		// and sine [sin] will give you the y coordinate.
+		// #include <math.h>
+		vertices[index + 1] = SimpleVertex(cos(theta), sin(theta), 0);
+		vertices[index + 2] = SimpleVertex(cos(theta + deltaTheta), sin(theta + deltaTheta), 0);
+	}
+	*/
 
 	// qList[1] = new Quad(
 	// 	{ 0.25f, 0.3f },
@@ -64,6 +142,7 @@ void AppWindow::onCreate()
 void AppWindow::onUpdate()
 {
 	Window::onUpdate();
+	InputSystem::get()->update();
 
 	ticks += EngineTime::getDeltaTime() * 1.0f;
 
@@ -77,14 +156,19 @@ void AppWindow::onUpdate()
 	const RECT rc = this->getClientWindowRect();
 	GraphicsEngine::get()->getImmediateDeviceContext()->setViewportSize(rc.right - rc.left, rc.bottom - rc.top);
 
-	// for (Quad* q : qList)
-	// {
-	// 	q->draw(EngineTime::getDeltaTime(), getClientWindowRect());
-	// }
+	/*for (Quad* q : qList)
+	{
+		q->draw(EngineTime::getDeltaTime(), getClientWindowRect());
+	}*/
 
-	for (Cube* c : cList)
+	/*for (Cube* c : cList)
 	{
 		c->draw(EngineTime::getDeltaTime(), getClientWindowRect());
+	}*/
+
+	for (Circle c : circleVector)
+	{
+		c.draw(EngineTime::getDeltaTime(), getClientWindowRect());
 	}
 
 	swapChain->present(true);

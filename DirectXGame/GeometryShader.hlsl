@@ -58,5 +58,5 @@ void main(triangle GS_INPUT input[3], inout TriangleStream<GS_OUTPUT> outputStre
     // 
     //     outputStream.RestartStrip();
     // }
-
+    
 }

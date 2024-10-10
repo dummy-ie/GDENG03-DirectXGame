@@ -1,6 +1,8 @@
 #pragma once
 
 #include <Windows.h>
+#include <vector>
+#include <iostream>
 
 #include "Window.h"
 #include "EngineTime.h"
@@ -12,9 +14,12 @@
 #include "Cube.h"
 #include "VertexShader.h"
 #include "PixelShader.h"
+#include "InputListener.h"
 #include "Quad.h"
+#include "Circle.h"
+#include "MathUtil.h"
 
-class AppWindow final : public Window
+class AppWindow final : public Window, public InputListener
 {
 public:
 	static AppWindow* get();
@@ -36,7 +41,8 @@ private:
 
 	Quad* qList[1]; // object manager later
 	Cube* cList[1]; // object manager later
-		
+	std::vector<Circle> circleVector;
+
 	SwapChain* swapChain;
 
 	VertexBuffer* vb;
@@ -46,5 +52,9 @@ private:
 	PixelShader* ps;
 
 	float ticks = 0.0f;
+
+	// Inherited via InputListener
+	void onKeyDown(int key) override;
+	void onKeyUp(int key) override;
 };
 
