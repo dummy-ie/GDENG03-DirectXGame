@@ -6,33 +6,6 @@
 
 Quad::Quad(const Vec2 size, const Vector3D pos, const Vector3D pos1, const Vector3D color) : size(size), pos(pos), pos1(pos1), color(color)
 {
-	// Vertex list[] =
-	// {
-	// 	{
-	// 		{-size.x + pos.x, -size.y + pos.y, 0.0f},
-	// 		{-size.x + pos1.x, -size.y + pos1.y, 0.0f},
-	// 		color,
-	// 		{0, 1, 0}},
-	//
-	// 	{
-	// 		{-size.x + pos.x, size.y + pos.y, 0.0f},
-	// 		{-size.x + pos1.x, size.y + pos1.y, 0.0f},
-	// 		color,
-	// 		{	0, 1, 1}},
-	//
-	// 	{
-	// 		{size.x + pos.x, -size.y + pos.y, 0.0f},
-	// 		{size.x + pos1.x, -size.y + pos1.y, 0.0f},
-	// 		color,
-	// 		{	1, 0, 0}},
-	//
-	// 	{
-	// 		{size.x + pos.x, size.y + pos.y, 0.0f},
-	// 		{size.x + pos1.x, size.y + pos1.y, 0.0f},
-	// 		color,
-	// 		{0, 0, 1}}
-	// };
-
 	Vertex list[] =
 	{
 		//X - Y - Z

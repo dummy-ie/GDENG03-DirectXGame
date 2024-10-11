@@ -1,6 +1,8 @@
 #include "InputSystem.h"
 #include <Windows.h>
 
+#include "DebugUtils.h"
+
 
 InputSystem::InputSystem()
 {

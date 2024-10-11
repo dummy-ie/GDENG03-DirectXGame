@@ -22,35 +22,47 @@
     <Filter Include="GameEngine\GraphicsEngine\VertexBuffer">
       <UniqueIdentifier>{ac56cbbe-ede8-4558-86d0-7cc4f825c54b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameEngine\GraphicsEngine\VertexShader">
-      <UniqueIdentifier>{253bcc9d-d63a-4aa6-a36b-68352ec7ebec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameEngine\GraphicsEngine\PixelShader">
-      <UniqueIdentifier>{97d5be49-3854-4144-92bc-4fafbd428ef8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameEngine\GraphicsEngine\ConstantBuffer">
       <UniqueIdentifier>{53243fd4-4348-4f55-b38e-79f959287cd7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameEngine\Structs">
-      <UniqueIdentifier>{a08c8cb8-278c-4d55-a577-1fd4340d2d34}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameEngine\GraphicsEngine\GeometryShader">
-      <UniqueIdentifier>{0ea37a0e-e909-4a9b-bd9c-577a01d98c6c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="App\Shaders">
-      <UniqueIdentifier>{401f121d-8b7c-4d7e-9171-461cf11156cf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameEngine\Math">
-      <UniqueIdentifier>{0bead97d-eeb1-4372-8d38-6b195fd236b2}</UniqueIdentifier>
     </Filter>
     <Filter Include="GameEngine\GraphicsEngine\IndexBuffer">
       <UniqueIdentifier>{5a18d984-d86a-4ed2-b2f2-788deb6f01cf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameEngine\GraphicsEngine\Shapes">
-      <UniqueIdentifier>{4a4cf811-cac6-4de5-9d5d-55e89a36f9be}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameEngine\InputSystem">
       <UniqueIdentifier>{4853660a-27dc-4dc7-b97c-891074232826}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\GameObjects">
+      <UniqueIdentifier>{4a4cf811-cac6-4de5-9d5d-55e89a36f9be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\GameObjects\2D">
+      <UniqueIdentifier>{e684f9af-b493-48c5-a879-093961d1fedb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\GameObjects\3D">
+      <UniqueIdentifier>{f99d1caf-45d3-453a-8aa6-fbc9e837210a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\GraphicsEngine\Shaders">
+      <UniqueIdentifier>{0215f3e9-d23f-4402-a294-1be2367683e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="App\HLSL">
+      <UniqueIdentifier>{401f121d-8b7c-4d7e-9171-461cf11156cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\GraphicsEngine\Shaders\PixelShader">
+      <UniqueIdentifier>{97d5be49-3854-4144-92bc-4fafbd428ef8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\GraphicsEngine\Shaders\VertexShader">
+      <UniqueIdentifier>{253bcc9d-d63a-4aa6-a36b-68352ec7ebec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\GraphicsEngine\Shaders\GeometryShader">
+      <UniqueIdentifier>{0ea37a0e-e909-4a9b-bd9c-577a01d98c6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Utilities">
+      <UniqueIdentifier>{f3a918c7-2a2f-41c3-b729-63ea05144989}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Utilities\Structs">
+      <UniqueIdentifier>{a08c8cb8-278c-4d55-a577-1fd4340d2d34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameEngine\Utilities\Math">
+      <UniqueIdentifier>{0bead97d-eeb1-4372-8d38-6b195fd236b2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -76,19 +88,16 @@
       <Filter>GameEngine\GraphicsEngine\VertexBuffer</Filter>
     </ClCompile>
     <ClCompile Include="VertexShader.cpp">
-      <Filter>GameEngine\GraphicsEngine\VertexShader</Filter>
+      <Filter>GameEngine\GraphicsEngine\Shaders\VertexShader</Filter>
     </ClCompile>
     <ClCompile Include="PixelShader.cpp">
-      <Filter>GameEngine\GraphicsEngine\PixelShader</Filter>
-    </ClCompile>
-    <ClCompile Include="Quad.cpp">
-      <Filter>GameEngine\GraphicsEngine\Shapes</Filter>
+      <Filter>GameEngine\GraphicsEngine\Shaders\PixelShader</Filter>
     </ClCompile>
     <ClCompile Include="ConstantBuffer.cpp">
       <Filter>GameEngine\GraphicsEngine\ConstantBuffer</Filter>
     </ClCompile>
     <ClCompile Include="GeometryShader.cpp">
-      <Filter>GameEngine\GraphicsEngine\GeometryShader</Filter>
+      <Filter>GameEngine\GraphicsEngine\Shaders\GeometryShader</Filter>
     </ClCompile>
     <ClCompile Include="EngineTime.cpp">
       <Filter>GameEngine\GraphicsEngine</Filter>
@@ -96,14 +105,20 @@
     <ClCompile Include="IndexBuffer.cpp">
       <Filter>GameEngine\GraphicsEngine\IndexBuffer</Filter>
     </ClCompile>
-    <ClCompile Include="Cube.cpp">
-      <Filter>GameEngine\GraphicsEngine\Shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="Circle.cpp">
-      <Filter>GameEngine\GraphicsEngine\Shapes</Filter>
-    </ClCompile>
     <ClCompile Include="InputSystem.cpp">
       <Filter>GameEngine\InputSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>GameEngine\GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Circle.cpp">
+      <Filter>GameEngine\GameObjects\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Quad.cpp">
+      <Filter>GameEngine\GameObjects\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>GameEngine\GameObjects\3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -126,46 +141,37 @@
       <Filter>GameEngine\GraphicsEngine\VertexBuffer</Filter>
     </ClInclude>
     <ClInclude Include="VertexShader.h">
-      <Filter>GameEngine\GraphicsEngine\VertexShader</Filter>
+      <Filter>GameEngine\GraphicsEngine\Shaders\VertexShader</Filter>
     </ClInclude>
     <ClInclude Include="PixelShader.h">
-      <Filter>GameEngine\GraphicsEngine\PixelShader</Filter>
-    </ClInclude>
-    <ClInclude Include="Quad.h">
-      <Filter>GameEngine\GraphicsEngine\Shapes</Filter>
+      <Filter>GameEngine\GraphicsEngine\Shaders\PixelShader</Filter>
     </ClInclude>
     <ClInclude Include="Vectors.h">
-      <Filter>GameEngine\Structs</Filter>
+      <Filter>GameEngine\Utilities\Structs</Filter>
     </ClInclude>
     <ClInclude Include="ConstantBuffer.h">
       <Filter>GameEngine\GraphicsEngine\ConstantBuffer</Filter>
     </ClInclude>
     <ClInclude Include="Vertex.h">
-      <Filter>GameEngine\Structs</Filter>
+      <Filter>GameEngine\Utilities\Structs</Filter>
     </ClInclude>
     <ClInclude Include="Constant.h">
-      <Filter>GameEngine\Structs</Filter>
+      <Filter>GameEngine\Utilities\Structs</Filter>
     </ClInclude>
     <ClInclude Include="GeometryShader.h">
-      <Filter>GameEngine\GraphicsEngine\GeometryShader</Filter>
+      <Filter>GameEngine\GraphicsEngine\Shaders\GeometryShader</Filter>
     </ClInclude>
     <ClInclude Include="Vector3D.h">
-      <Filter>GameEngine\Math</Filter>
+      <Filter>GameEngine\Utilities\Math</Filter>
     </ClInclude>
     <ClInclude Include="Matrix4x4.h">
-      <Filter>GameEngine\Math</Filter>
+      <Filter>GameEngine\Utilities\Math</Filter>
     </ClInclude>
     <ClInclude Include="EngineTime.h">
       <Filter>GameEngine\GraphicsEngine</Filter>
     </ClInclude>
     <ClInclude Include="IndexBuffer.h">
       <Filter>GameEngine\GraphicsEngine\IndexBuffer</Filter>
-    </ClInclude>
-    <ClInclude Include="Cube.h">
-      <Filter>GameEngine\GraphicsEngine\Shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="Circle.h">
-      <Filter>GameEngine\GraphicsEngine\Shapes</Filter>
     </ClInclude>
     <ClInclude Include="InputListener.h">
       <Filter>GameEngine\InputSystem</Filter>
@@ -174,21 +180,39 @@
       <Filter>GameEngine\InputSystem</Filter>
     </ClInclude>
     <ClInclude Include="MathUtil.h">
-      <Filter>GameEngine\Math</Filter>
+      <Filter>GameEngine\Utilities\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>GameEngine\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Circle.h">
+      <Filter>GameEngine\GameObjects\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Quad.h">
+      <Filter>GameEngine\GameObjects\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>GameEngine\GameObjects\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>GameEngine\GraphicsEngine\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugUtils.h">
+      <Filter>GameEngine\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="GeometryShader.hlsl">
-      <Filter>App\Shaders</Filter>
+      <Filter>App\HLSL</Filter>
     </FxCompile>
     <FxCompile Include="PixelShader.hlsl">
-      <Filter>App\Shaders</Filter>
+      <Filter>App\HLSL</Filter>
     </FxCompile>
     <FxCompile Include="VertexShader.hlsl">
-      <Filter>App\Shaders</Filter>
+      <Filter>App\HLSL</Filter>
     </FxCompile>
     <FxCompile Include="shader.fx">
-      <Filter>App\Shaders</Filter>
+      <Filter>App\HLSL</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

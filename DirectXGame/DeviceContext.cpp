@@ -9,20 +9,19 @@
 #include "IndexBuffer.h"
 #include "PixelShader.h"
 
-DeviceContext::DeviceContext(ID3D11DeviceContext* device_context) : m_device_context(device_context)
+DeviceContext::DeviceContext(ID3D11DeviceContext* deviceContext) : m_device_context(deviceContext)
 {
 
 }
 
 DeviceContext::~DeviceContext()
-{
-}
+= default;
 
-void DeviceContext::clearRenderTargetColor(SwapChain* swap_chain, float r, float g, float b, float a)
+void DeviceContext::clearRenderTargetColor(SwapChain* swapChain, float r, float g, float b, float a)
 {
-	FLOAT clear_color[] = { r, g, b, a };
-	m_device_context->ClearRenderTargetView(swap_chain->m_rtv, clear_color);
-	m_device_context->OMSetRenderTargets(1, &swap_chain->m_rtv, NULL);
+	const FLOAT clear_color[] = { r, g, b, a };
+	m_device_context->ClearRenderTargetView(swapChain->m_rtv, clear_color);
+	m_device_context->OMSetRenderTargets(1, &swapChain->m_rtv, nullptr);
 }
 
 void DeviceContext::setVertexBuffer(VertexBuffer* vertex_buffer)
@@ -80,17 +79,17 @@ void DeviceContext::setViewportSize(UINT width, UINT height)
 
 void DeviceContext::setVertexShader(VertexShader* vertex_shader)
 {
-	m_device_context->VSSetShader(vertex_shader->m_vs, nullptr, 0);
+	m_device_context->VSSetShader(vertex_shader->vs, nullptr, 0);
 }
 
 void DeviceContext::setGeometryShader(GeometryShader* geometry_shader)
 {
-	m_device_context->GSSetShader(geometry_shader->m_gs, nullptr, 0);
+	m_device_context->GSSetShader(geometry_shader->gs, nullptr, 0);
 }
 
 void DeviceContext::setPixelShader(PixelShader* pixel_shader)
 {
-	m_device_context->PSSetShader(pixel_shader->m_ps, nullptr, 0);
+	m_device_context->PSSetShader(pixel_shader->ps, nullptr, 0);
 }
 
 void DeviceContext::setConstantBuffer(VertexShader* vertex_shader, ConstantBuffer* constant_buffer)

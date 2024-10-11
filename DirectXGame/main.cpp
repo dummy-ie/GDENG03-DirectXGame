@@ -1,5 +1,6 @@
 #include "AppWindow.h"
 
+
 int main()
 {
 	AppWindow::initialize();

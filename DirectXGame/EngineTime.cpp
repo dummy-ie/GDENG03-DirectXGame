@@ -20,12 +20,12 @@ EngineTime::~EngineTime()
 {
 }
 
-void EngineTime::LogFrameStart()
+void EngineTime::logFrameStart()
 {
 	sharedInstance->start = std::chrono::system_clock::now();
 }
 
-void EngineTime::LogFrameEnd()
+void EngineTime::logFrameEnd()
 {
 	sharedInstance->end = std::chrono::system_clock::now();
 	std::chrono::duration<double> elapsed_seconds = sharedInstance->end - sharedInstance->start;

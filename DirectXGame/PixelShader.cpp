@@ -2,24 +2,22 @@
 #include "GraphicsEngine.h"
 
 PixelShader::PixelShader()
-{
-}
+= default;
 
 PixelShader::~PixelShader()
-{
-}
+= default;
 
 bool PixelShader::release()
 {
-	m_ps->Release();
+	ps->Release();
 	delete this;
 
 	return true;
 }
 
-bool PixelShader::init(const void* shader_byte_code, size_t byte_code_size)
+bool PixelShader::init(const void* shaderByteCode, const size_t byteCodeSize)
 {
-	if (!SUCCEEDED(GraphicsEngine::get()->m_d3d_device->CreatePixelShader(shader_byte_code, byte_code_size, nullptr, &m_ps)))
+	if (!SUCCEEDED(GraphicsEngine::get()->m_d3d_device->CreatePixelShader(shaderByteCode, byteCodeSize, nullptr, &ps)))
 		return false;
 
 	return true;

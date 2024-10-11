@@ -12,10 +12,10 @@ class PixelShader;
 class DeviceContext
 {
 public:
-	DeviceContext(ID3D11DeviceContext* device_context);
+	DeviceContext(ID3D11DeviceContext* deviceContext);
 	~DeviceContext();
 
-	void clearRenderTargetColor(SwapChain* swap_chain, float r, float g, float b, float a);
+	void clearRenderTargetColor(SwapChain* swapChain, float r, float g, float b, float a);
 	void setVertexBuffer(VertexBuffer* vertex_buffer);
 	void setIndexBuffer(IndexBuffer* index_buffer);
 	void drawTriangleList(UINT vertex_count, UINT start_vertex_index);

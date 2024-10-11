@@ -1,23 +1,21 @@
 ﻿#pragma once
 #include <d3d11.h>
 
-class GraphicsEngine;
-class DeviceContext;
+#include "Shader.h"
 
-class GeometryShader
+class GeometryShader : public Shader
 {
 public:
 	GeometryShader();
-	~GeometryShader();
-	bool release();
+	~GeometryShader() override;
+	bool release() override;
 
 private:
-	bool init(const void* shader_byte_code, size_t byte_code_size);
+	bool init(const void* shaderByteCode,const size_t byteCodeSize) override;
 
-	ID3D11GeometryShader* m_gs;
+	ID3D11GeometryShader* gs;
 
 	friend class GraphicsEngine;
 	friend class DeviceContext;
-
 };
 

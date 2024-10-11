@@ -6,6 +6,7 @@
 #include "Vectors.h"
 #include "Vertex.h"
 #include "Constant.h"
+#include "GameObject.h"
 
 class Quad
 {

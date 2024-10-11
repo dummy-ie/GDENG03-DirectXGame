@@ -2,24 +2,22 @@
 #include "GraphicsEngine.h"
 
 VertexShader::VertexShader()
-{
-}
+= default;
 
 VertexShader::~VertexShader()
-{
-}
+= default;
 
 bool VertexShader::release()
 {
-	m_vs->Release();
+	vs->Release();
 	delete this;
 
 	return true;
 }
 
-bool VertexShader::init(const void* shader_byte_code, size_t byte_code_size)
+bool VertexShader::init(const void* shaderByteCode, const size_t byteCodeSize)
 {
-	if (!SUCCEEDED(GraphicsEngine::get()->m_d3d_device->CreateVertexShader(shader_byte_code, byte_code_size, nullptr, &m_vs)))
+	if (!SUCCEEDED(GraphicsEngine::get()->m_d3d_device->CreateVertexShader(shaderByteCode, byteCodeSize, nullptr, &vs)))
 		return false;
 
 	return true;

@@ -11,15 +11,15 @@ GeometryShader::~GeometryShader()
 
 bool GeometryShader::release()
 {
-	m_gs->Release();
+	gs->Release();
 	delete this;
 
 	return true;
 }
 
-bool GeometryShader::init(const void* shader_byte_code, size_t byte_code_size)
+bool GeometryShader::init(const void* shaderByteCode, const size_t byteCodeSize)
 {
-	if (!SUCCEEDED(GraphicsEngine::get()->m_d3d_device->CreateGeometryShader(shader_byte_code, byte_code_size, nullptr, &m_gs)))
+	if (!SUCCEEDED(GraphicsEngine::get()->m_d3d_device->CreateGeometryShader(shaderByteCode, byteCodeSize, nullptr, &gs)))
 		return false;
 
 	return true;

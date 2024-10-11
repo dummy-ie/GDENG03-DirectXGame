@@ -4,6 +4,8 @@
 #include <vector>
 #include <iostream>
 
+#include "DebugUtils.h"
+
 #include "Window.h"
 #include "EngineTime.h"
 #include "GraphicsEngine.h"
@@ -11,6 +13,7 @@
 #include "DeviceContext.h"
 #include "VertexBuffer.h"
 #include "ConstantBuffer.h"
+#include "GameObject.h"
 #include "Cube.h"
 #include "VertexShader.h"
 #include "PixelShader.h"
@@ -39,16 +42,14 @@ private:
 	AppWindow& operator=(AppWindow const&) {};
 	static AppWindow* sharedInstance;
 
-	Quad* qList[1]; // object manager later
-	Cube* cList[1]; // object manager later
+	//Quad* qList[1]; // object manager later
+	//Cube* cList[1]; // object manager later
 	std::vector<Circle> circleVector;
 
 	SwapChain* swapChain;
 
-	VertexBuffer* vb;
-	ConstantBuffer* cb;
-
 	VertexShader* vs;
+	GeometryShader* gs;
 	PixelShader* ps;
 
 	float ticks = 0.0f;

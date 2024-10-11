@@ -82,7 +82,7 @@ bool Window::broadcast()
 {
 	MSG msg;
 
-	EngineTime::LogFrameStart();
+	EngineTime::logFrameStart();
 	this->onUpdate();
 
 	while (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) > 0)
@@ -92,7 +92,7 @@ bool Window::broadcast()
 	}
 
 	Sleep(1);
-	EngineTime::LogFrameEnd();
+	EngineTime::logFrameEnd();
 
 	return true;
 }

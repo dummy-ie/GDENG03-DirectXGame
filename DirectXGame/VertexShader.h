@@ -1,21 +1,20 @@
 #pragma once
 #include <d3d11.h>
 
-class GraphicsEngine;
-class DeviceContext;
+#include "Shader.h"
 
-class VertexShader
+class VertexShader : public Shader
 {
 public:
 	VertexShader();
-	~VertexShader();
+	~VertexShader() override;
 
-	bool release();
+	bool release() override;
 
 private:
-	bool init(const void* shader_byte_code, size_t byte_code_size);
+	bool init(const void* shaderByteCode,const size_t byteCodeSize) override;
 
-	ID3D11VertexShader* m_vs;
+	ID3D11VertexShader* vs;
 
 	friend class GraphicsEngine;
 	friend class DeviceContext;

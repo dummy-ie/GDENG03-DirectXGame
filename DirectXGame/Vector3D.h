@@ -8,14 +8,14 @@ public:
 	Vector3D() : x(0), y(0), z(0) {}
 	Vector3D(const float x, const float y, const float z) : x(x), y(y), z(z) {}
 	Vector3D(const Vector3D& vector) : x(vector.x), y(vector.y), z(vector.z) {}
-	~Vector3D() {}
+	~Vector3D() = default;
 
 	float magnitude() const
 	{
 		return sqrt((x * x + y * y + z * z));
 	}
 
-	Vector3D normalize()
+	Vector3D normalize() const
 	{
 		const float mag = this->magnitude();
 		return *this / mag;

@@ -18,8 +18,8 @@ private:
 	EngineTime& operator=(EngineTime const&) {};
 	static EngineTime* sharedInstance;
 
-	static void LogFrameStart();
-	static void LogFrameEnd();
+	static void logFrameStart();
+	static void logFrameEnd();
 
 	std::chrono::system_clock::time_point start;
 	std::chrono::system_clock::time_point end;

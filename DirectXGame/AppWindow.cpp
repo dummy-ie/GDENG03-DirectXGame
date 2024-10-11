@@ -1,4 +1,5 @@
 #include "AppWindow.h"
+
 #include "InputSystem.h"
 
 AppWindow* AppWindow::sharedInstance = nullptr;
@@ -51,21 +52,21 @@ void AppWindow::onKeyUp(int key)
 		//
 		// std::cout << "position: " << pos << std::endl;
 		// circleVector.emplace_back(size, pos);
-		circleVector.emplace_back();
+		//circleVector.emplace_back();
 		break;
 	}
 	case VK_ESCAPE:
 		exit(0);
 		break;
-	case VK_DELETE:
-		circleVector.clear();
-		break;
-	case VK_BACK:
-	{
-		if (!circleVector.empty())
-			circleVector.pop_back();
-		break;
-	}
+	// case VK_DELETE:
+	// 	circleVector.clear();
+	// 	break;
+	// case VK_BACK:
+	// {
+	// 	if (!circleVector.empty())
+	// 		circleVector.pop_back();
+	// 	break;
+	// }
 	default:
 		break;
 	}
@@ -84,15 +85,35 @@ void AppWindow::onCreate()
 
 	InputSystem::get()->addListener(this);
 
-	qList[0] = new Quad(
-		{ 1.0f, 1.0f },
-		{ -0.2f, 0.2f, 0.0f },
-		{ 0.5f, -0.8f, 0.0f },
-		{ 1.0f, 0.0f, 0.0f });
+	void* shader_byte_code = nullptr;
+	size_t byte_code_size = 0;
 
-	cList[0] = new Cube();
+	GraphicsEngine::get()->compileVertexShader(L"VertexShader.hlsl", "main", &shader_byte_code, &byte_code_size);
+	vs = GraphicsEngine::get()->createVertexShader(shader_byte_code, byte_code_size);
+	GraphicsEngine::get()->releaseCompiledShader();
 
-	circleVector.push_back(Circle({0.1f, 0.1f}, {0.5f, 0.5f, 0.0f}));
+	std::cout << "vs ptr: " << vs << std::endl;
+
+	GraphicsEngine::get()->compileGeometryShader(L"GeometryShader.hlsl", "main", &shader_byte_code, &byte_code_size);
+	gs = GraphicsEngine::get()->createGeometryShader(shader_byte_code, byte_code_size);
+	GraphicsEngine::get()->releaseCompiledShader();
+	std::cout << "gs ptr: " << gs << std::endl;
+
+	GraphicsEngine::get()->compilePixelShader(L"PixelShader.hlsl", "main", &shader_byte_code, &byte_code_size);
+	ps = GraphicsEngine::get()->createPixelShader(shader_byte_code, byte_code_size);
+	GraphicsEngine::get()->releaseCompiledShader();
+
+	std::cout << "ps ptr: " << ps << std::endl;
+	// qList[0] = new Quad(
+	// 	{ 1.0f, 1.0f },
+	// 	{ -0.2f, 0.2f, 0.0f },
+	// 	{ 0.5f, -0.8f, 0.0f },
+	// 	{ 1.0f, 0.0f, 0.0f });
+	//
+	// cList[0] = new Cube();
+
+	DebugUtils::debugLog("emplacing circle to vector");
+	circleVector.emplace_back("circle", shader_byte_code, byte_code_size, 0.5f);
 
 	/*
 	int n = 10; // number of triangles
@@ -125,6 +146,7 @@ void AppWindow::onCreate()
 
 void AppWindow::onUpdate()
 {
+
 	Window::onUpdate();
 	InputSystem::get()->update();
 
@@ -150,9 +172,11 @@ void AppWindow::onUpdate()
 		c->draw(EngineTime::getDeltaTime(), getClientWindowRect());
 	}*/
 
+	DebugUtils::debugLog("update and draw circles");
 	for (Circle c : circleVector)
 	{
-		c.draw(EngineTime::getDeltaTime(), getClientWindowRect());
+		c.update(EngineTime::getDeltaTime());
+		c.draw(vs, gs, ps, getClientWindowRect());
 	}
 
 	swapChain->present(true);
