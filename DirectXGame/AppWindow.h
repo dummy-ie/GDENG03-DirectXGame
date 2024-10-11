@@ -33,8 +33,6 @@ public:
 	void onUpdate() override;
 	void onDestroy() override;
 
-	void updateQuadPosition();
-
 private:
 	AppWindow();
 	~AppWindow();
@@ -44,7 +42,7 @@ private:
 
 	//Quad* qList[1]; // object manager later
 	//Cube* cList[1]; // object manager later
-	std::vector<Circle> circleVector;
+	std::vector<Circle*> circleVector;
 
 	SwapChain* swapChain;
 

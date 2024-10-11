@@ -5,9 +5,14 @@
 class DebugUtils
 {
 public:
-	static void debugLog(const std::string& msg)
+	static void log(const std::string& msg)
 	{
-		std::cout << "[DEBUG]: " << msg << std::endl;
+		std::cout << "[DEBUG]: " << msg << '\n';
+	}
+
+	static void error(const std::string& msg)
+	{
+		std::cout << "[ERROR]: " << msg << '\n';
 	}
 	
 };

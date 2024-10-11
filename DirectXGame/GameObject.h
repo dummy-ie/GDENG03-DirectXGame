@@ -35,7 +35,7 @@ protected:
 
 	Vector3D color;
 
-	VertexBuffer* vb;
+	VertexBuffer* vertexBuffer;
 	IndexBuffer* ib;
-	ConstantBuffer* cb;
+	ConstantBuffer* constantBuffer;
 };

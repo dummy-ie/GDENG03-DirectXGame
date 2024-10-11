@@ -58,15 +58,15 @@ void AppWindow::onKeyUp(int key)
 	case VK_ESCAPE:
 		exit(0);
 		break;
-	// case VK_DELETE:
-	// 	circleVector.clear();
-	// 	break;
-	// case VK_BACK:
-	// {
-	// 	if (!circleVector.empty())
-	// 		circleVector.pop_back();
-	// 	break;
-	// }
+		// case VK_DELETE:
+		// 	circleVector.clear();
+		// 	break;
+		// case VK_BACK:
+		// {
+		// 	if (!circleVector.empty())
+		// 		circleVector.pop_back();
+		// 	break;
+		// }
 	default:
 		break;
 	}
@@ -85,25 +85,26 @@ void AppWindow::onCreate()
 
 	InputSystem::get()->addListener(this);
 
-	void* shader_byte_code = nullptr;
-	size_t byte_code_size = 0;
+	void* shaderByteCode = nullptr;
+	size_t byteCodeSize = 0;
 
-	GraphicsEngine::get()->compileVertexShader(L"VertexShader.hlsl", "main", &shader_byte_code, &byte_code_size);
-	vs = GraphicsEngine::get()->createVertexShader(shader_byte_code, byte_code_size);
+	GraphicsEngine::get()->compileVertexShader(L"VertexShader.hlsl", "main", &shaderByteCode, &byteCodeSize);
+	vs = GraphicsEngine::get()->createVertexShader(shaderByteCode, byteCodeSize);
+
+	DebugUtils::log("emplacing circle to vector");
+	Circle* c = new Circle("circle", shaderByteCode, byteCodeSize, 0.5f);
+	circleVector.push_back(c);
+
 	GraphicsEngine::get()->releaseCompiledShader();
 
-	std::cout << "vs ptr: " << vs << std::endl;
-
-	GraphicsEngine::get()->compileGeometryShader(L"GeometryShader.hlsl", "main", &shader_byte_code, &byte_code_size);
-	gs = GraphicsEngine::get()->createGeometryShader(shader_byte_code, byte_code_size);
-	GraphicsEngine::get()->releaseCompiledShader();
-	std::cout << "gs ptr: " << gs << std::endl;
-
-	GraphicsEngine::get()->compilePixelShader(L"PixelShader.hlsl", "main", &shader_byte_code, &byte_code_size);
-	ps = GraphicsEngine::get()->createPixelShader(shader_byte_code, byte_code_size);
+	GraphicsEngine::get()->compileGeometryShader(L"GeometryShader.hlsl", "main", &shaderByteCode, &byteCodeSize);
+	gs = GraphicsEngine::get()->createGeometryShader(shaderByteCode, byteCodeSize);
 	GraphicsEngine::get()->releaseCompiledShader();
 
-	std::cout << "ps ptr: " << ps << std::endl;
+	GraphicsEngine::get()->compilePixelShader(L"PixelShader.hlsl", "main", &shaderByteCode, &byteCodeSize);
+	ps = GraphicsEngine::get()->createPixelShader(shaderByteCode, byteCodeSize);
+	GraphicsEngine::get()->releaseCompiledShader();
+
 	// qList[0] = new Quad(
 	// 	{ 1.0f, 1.0f },
 	// 	{ -0.2f, 0.2f, 0.0f },
@@ -111,25 +112,6 @@ void AppWindow::onCreate()
 	// 	{ 1.0f, 0.0f, 0.0f });
 	//
 	// cList[0] = new Cube();
-
-	DebugUtils::debugLog("emplacing circle to vector");
-	circleVector.emplace_back("circle", shader_byte_code, byte_code_size, 0.5f);
-
-	/*
-	int n = 10; // number of triangles
-	SimpleVertex* vertices = malloc(sizeof(SimpleVertex) * 10 * 3); // 10 triangles, 3 verticies per triangle
-	float deltaTheta = 2*pi / n; // Change in theta for each vertex
-	for( int i = 0; i < n; i++ ) {
-		int theta = i * deltaTheta; // Theta is the angle for that triangle
-		int index = 3 * i;
-		vertices[index + 0] = SimpleVertex(0, 0, 0);
-		// Given an angle theta, cosine [cos] will give you the x coordinate,
-		// and sine [sin] will give you the y coordinate.
-		// #include <math.h>
-		vertices[index + 1] = SimpleVertex(cos(theta), sin(theta), 0);
-		vertices[index + 2] = SimpleVertex(cos(theta + deltaTheta), sin(theta + deltaTheta), 0);
-	}
-	*/
 
 	// qList[1] = new Quad(
 	// 	{ 0.25f, 0.3f },
@@ -152,6 +134,10 @@ void AppWindow::onUpdate()
 
 	ticks += EngineTime::getDeltaTime() * 1.0f;
 
+	GraphicsEngine::get()->getImmediateDeviceContext()->setVertexShader(vs);
+	GraphicsEngine::get()->getImmediateDeviceContext()->setGeometryShader(gs);
+	GraphicsEngine::get()->getImmediateDeviceContext()->setPixelShader(ps);
+
 	GraphicsEngine::get()->getImmediateDeviceContext()->clearRenderTargetColor(
 		this->swapChain,
 		0.15,
@@ -172,11 +158,11 @@ void AppWindow::onUpdate()
 		c->draw(EngineTime::getDeltaTime(), getClientWindowRect());
 	}*/
 
-	DebugUtils::debugLog("update and draw circles");
-	for (Circle c : circleVector)
+	//DebugUtils::log("update and draw circles");
+	for (Circle* c : circleVector)
 	{
-		c.update(EngineTime::getDeltaTime());
-		c.draw(vs, gs, ps, getClientWindowRect());
+		c->update(EngineTime::getDeltaTime());
+		c->draw(vs, gs, ps, getClientWindowRect());
 	}
 
 	swapChain->present(true);
@@ -186,16 +172,11 @@ void AppWindow::onDestroy()
 {
 	Window::onDestroy();
 
-	//vb->release();
+	//vertexBuffer->release();
 	swapChain->release();
 	//vs->release();
 	//ps->release();
 
 	//GraphicsEngine::get()->release();
 	GraphicsEngine::destroy();
-}
-
-void AppWindow::updateQuadPosition()
-{
-
 }

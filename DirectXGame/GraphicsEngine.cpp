@@ -9,6 +9,8 @@
 #include "GeometryShader.h"
 #include <d3dcompiler.h>
 
+#include "DebugUtils.h"
+
 GraphicsEngine* GraphicsEngine::sharedInstance = nullptr;
 
 
@@ -158,7 +160,10 @@ bool GraphicsEngine::compileGeometryShader(const wchar_t* file_name, const char*
 	)))
 	{
 		if (error_blob)
+		{
+			DebugUtils::error("Geometry shader compilation failed!");
 			error_blob->Release();
+		}
 
 		return false;
 	}
@@ -185,7 +190,10 @@ bool GraphicsEngine::compileVertexShader(const wchar_t* file_name, const char* e
 	)))
 	{
 		if (error_blob)
+		{
+			DebugUtils::error("Vertex shader compilation failed!");
 			error_blob->Release();
+		}
 
 		return false;
 	}
@@ -213,7 +221,10 @@ bool GraphicsEngine::compilePixelShader(const wchar_t* file_name, const char* en
 	)))
 	{
 		if (error_blob)
+		{
+			DebugUtils::error("Pixel shader compilation failed!");
 			error_blob->Release();
+		}
 
 		return false;
 	}

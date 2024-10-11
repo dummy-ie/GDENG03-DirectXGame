@@ -20,11 +20,9 @@ public:
 	void release() const override;
 
 	void update(float deltaTime) override;
-	void draw(VertexShader* vs, GeometryShader* gs, PixelShader* ps, RECT clientWindow) override;
+	void draw(VertexShader* vertexShader, GeometryShader* geometryShader, PixelShader* pixelShader, RECT clientWindow) override;
 
 private:
-	float m_delta_pos = 0;
-	float m_delta_scale = 0;
-
-	float angle = 0;
+	float deltaPos = 0;
+	float deltaScale = 0;
 };
