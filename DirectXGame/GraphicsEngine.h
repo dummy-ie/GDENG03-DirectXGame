@@ -17,46 +17,46 @@ public:
 	static void initialize();
 	static void destroy();
 
-	SwapChain* createSwapChain();
-	DeviceContext* getImmediateDeviceContext();
-	VertexBuffer* createVertexBuffer();
-	IndexBuffer* createIndexBuffer();
-	ConstantBuffer* createConstantBuffer();
-	VertexShader* createVertexShader(const void* shader_byte_code, size_t byte_code_size);
-	PixelShader* createPixelShader(const void* shader_byte_code, size_t byte_code_size);
-	GeometryShader* createGeometryShader(const void* shader_byte_code, size_t byte_code_size);
+	static SwapChain* createSwapChain();
+	DeviceContext* getImmediateDeviceContext() const;
+	static VertexBuffer* createVertexBuffer();
+	static IndexBuffer* createIndexBuffer();
+	static ConstantBuffer* createConstantBuffer();
+	static VertexShader* createVertexShader(const void* shaderByteCode, size_t byteCodeSize);
+	static PixelShader* createPixelShader(const void* shaderByteCode, size_t byteCodeSize);
+	static GeometryShader* createGeometryShader(const void* shaderByteCode, size_t byteCodeSize);
 
-	bool compileVertexShader(const wchar_t* file_name, const char* entry_point_name, void** shader_byte_code, size_t* byte_code_size);
-	bool compilePixelShader(const wchar_t* file_name, const char* entry_point_name, void** shader_byte_code, size_t* byte_code_size);
-	bool compileGeometryShader(const wchar_t* file_name, const char* entry_point_name, void** shader_byte_code, size_t* byte_code_size);
-	void releaseCompiledShader();
+	bool compileVertexShader(const wchar_t* fileName, const char* entryPointName, void** shader_byte_code, size_t* byte_code_size);
+	bool compilePixelShader(const wchar_t* fileName, const char* entryPointName, void** shaderByteCode, size_t* byteCodeSize);
+	bool compileGeometryShader(const wchar_t* fileName, const char* entryPointName, void** shaderByteCode, size_t* byteCodeSize);
+	void releaseCompiledShader() const;
 
 private:
 	GraphicsEngine();
 	~GraphicsEngine();
-	GraphicsEngine(GraphicsEngine const&) {};
-	GraphicsEngine& operator=(GraphicsEngine const&) {};
+	GraphicsEngine(GraphicsEngine const&);
+	GraphicsEngine& operator=(GraphicsEngine const&) {}
 	static GraphicsEngine* sharedInstance;
 
 	bool init();
-	bool release();
+	bool release() const;
 
-	DeviceContext* m_imm_device_context;
+	DeviceContext* immDeviceContext = nullptr;
 
-	ID3D11Device* m_d3d_device;
-	D3D_FEATURE_LEVEL m_feature_level;
-	ID3D11DeviceContext* m_imm_context;
+	ID3D11Device* d3dDevice = nullptr;
+	D3D_FEATURE_LEVEL featureLevel;
+	ID3D11DeviceContext* immContext = nullptr;
 
-	IDXGIDevice* m_dxgi_device;
-	IDXGIAdapter* m_dxgi_adapter;
-	IDXGIFactory* m_dxgi_factory;
+	IDXGIDevice* dxgiDevice = nullptr;
+	IDXGIAdapter* dxgiAdapter = nullptr;
+	IDXGIFactory* dxgiFactory = nullptr;
 
-	ID3DBlob* m_blob = nullptr;
+	ID3DBlob* blob = nullptr;
 
-	ID3DBlob* m_vsblob = nullptr;
-	ID3DBlob* m_psblob = nullptr;
-	ID3D11VertexShader* m_vs = nullptr;
-	ID3D11PixelShader* m_ps = nullptr;
+	ID3DBlob* vertexShaderBlob = nullptr;
+	ID3DBlob* pixelShaderBlob = nullptr;
+	ID3D11VertexShader* vertexShader = nullptr;
+	ID3D11PixelShader* pixelShader = nullptr;
 
 	friend class SwapChain;
 	friend class VertexBuffer;

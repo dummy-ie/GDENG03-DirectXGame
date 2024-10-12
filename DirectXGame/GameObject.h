@@ -6,36 +6,44 @@
 #include "Vectors.h"
 #include "Vertex.h"
 #include "Constant.h"
+#include "ConstantBuffer.h"
 
 class GameObject
 {
 public:
+	explicit GameObject(std::string name) : name(std::move(name))
+	{
+	}
 
-	GameObject(const std::string& name) : name(name) {};
-	virtual ~GameObject() = default;
+	virtual ~GameObject()
+	{
+		if (vertexBuffer)
+			vertexBuffer->release();
 
-	virtual void release() const = 0;
+		if (indexBuffer)
+			indexBuffer->release();
+
+		if (constantBuffer)
+			constantBuffer->release();
+	}
 
 	virtual void update(float deltaTime) = 0;
-	virtual void draw(VertexShader* vs, GeometryShader* gs, PixelShader* ps, RECT clientWindow) = 0;
+	virtual void draw(VertexShader* vertexShader, GeometryShader* geometryShader, PixelShader* pixelShader, RECT clientWindow) = 0;
 
-	void setPosition(const Vector3D& pos) { localPosition = pos; }
-	void setScale(const Vector3D& sca) { localScale = sca; }
-	void setRotation(const Vector3D& rot) { localRotation = rot; }
+	void setPosition(const Vector3D& position) { localPosition = position; }
+	void setScale(const Vector3D& scale) { localScale = scale; }
+	void setRotation(const Vector3D& rotation) { localRotation = rotation; }
 
 protected:
-	float deltaPos = 0;
-	float deltaScale = 0;
-
 	std::string name;
 
-	Vector3D localScale;
-	Vector3D localPosition;
-	Vector3D localRotation;
+	Vector3D localScale = 0.5f;
+	Vector3D localPosition = 0.f;
+	Vector3D localRotation = 0.f;
 
 	Vector3D color;
 
-	VertexBuffer* vertexBuffer;
-	IndexBuffer* ib;
-	ConstantBuffer* constantBuffer;
+	VertexBuffer* vertexBuffer = nullptr;
+	IndexBuffer* indexBuffer = nullptr;
+	ConstantBuffer* constantBuffer = nullptr;
 };

@@ -15,9 +15,11 @@
 class Circle : public GameObject
 {
 public:
-	Circle(std::string name, void* shaderByteCode, size_t sizeShader, const float radius);
+	Circle(const std::string& name, void* shaderByteCode, size_t sizeShader, const float radius);
+	~Circle() override;
 
-	void release() const override;
+	// release everything in destructor instead
+	//void release() const override;
 
 	void update(float deltaTime) override;
 	void draw(VertexShader* vertexShader, GeometryShader* geometryShader, PixelShader* pixelShader, RECT clientWindow) override;

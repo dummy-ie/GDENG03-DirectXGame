@@ -23,11 +23,10 @@ cbuffer constant : register(b0)
 [maxvertexcount(16)]
 void main(triangle GS_INPUT input[3], inout TriangleStream<GS_OUTPUT> outputStream)
 {
-    GS_OUTPUT output;
-
-    for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < 3; ++i)
     {
-        output.pos = input[i].pos;
+	    GS_OUTPUT output;
+	    output.pos = input[i].pos;
         output.color = input[i].color;
         output.color1 = input[i].color1;
 

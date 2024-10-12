@@ -16,27 +16,26 @@ public:
 	~DeviceContext();
 
 	void clearRenderTargetColor(SwapChain* swapChain, float r, float g, float b, float a);
-	void setVertexBuffer(VertexBuffer* vertex_buffer);
-	void setIndexBuffer(IndexBuffer* index_buffer);
-	void drawTriangleList(UINT vertex_count, UINT start_vertex_index);
-	void drawIndexedTriangleList(UINT index_count, UINT start_vertex_index, UINT start_index_location);
-	void drawTriangleStrip(UINT vertex_count, UINT start_vertex_index);
-	void drawLineStrip(UINT vertex_count, UINT start_vertex_index);
+	void setVertexBuffer(VertexBuffer* vertexBuffer);
+	void setIndexBuffer(IndexBuffer* indexBuffer);
+	void drawTriangleList(UINT vertexCount, UINT startVertexIndex);
+	void drawIndexedTriangleList(UINT indexCount, UINT startVertexIndex, UINT startIndexLocation);
+	void drawTriangleStrip(UINT vertexCount, UINT startVertexIndex);
+	void drawLineStrip(UINT vertexCount, UINT startVertexIndex);
 
 	void setViewportSize(UINT width, UINT height);
-	void setVertexShader(VertexShader* vertex_shader);
-	void setGeometryShader(GeometryShader* geometry_shader);
-	void setPixelShader(PixelShader* pixel_shader);
+	void setVertexShader(VertexShader* vertexShader);
+	void setGeometryShader(GeometryShader* geometryShader);
+	void setPixelShader(PixelShader* pixelShader);
 
-	void setConstantBuffer(VertexShader* vertex_shader, ConstantBuffer* constant_buffer);
-	void setConstantBuffer(GeometryShader* geometry_shader, ConstantBuffer* constant_buffer);
-	void setConstantBuffer(PixelShader* pixel_shader, ConstantBuffer* constant_buffer);
+	void setConstantBuffer(VertexShader* vertexShader, ConstantBuffer* constantBuffer);
+	void setConstantBuffer(GeometryShader* geometryShader, ConstantBuffer* constantBuffer);
+	void setConstantBuffer(PixelShader* pixelShader, ConstantBuffer* constantBuffer);
 
 	bool release();
 
 private:
-	ID3D11DeviceContext* m_device_context;
+	ID3D11DeviceContext* deviceContext;
 
 	friend class ConstantBuffer;
 };
-

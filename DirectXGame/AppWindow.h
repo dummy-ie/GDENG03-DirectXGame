@@ -42,13 +42,13 @@ private:
 
 	//Quad* qList[1]; // object manager later
 	//Cube* cList[1]; // object manager later
-	std::vector<Circle*> circleVector;
+	std::vector<GameObject*> gameObjectsVector;
 
 	SwapChain* swapChain;
 
-	VertexShader* vs;
-	GeometryShader* gs;
-	PixelShader* ps;
+	VertexShader* vertexShader;
+	GeometryShader* geometryShader;
+	PixelShader* pixelShader;
 
 	float ticks = 0.0f;
 

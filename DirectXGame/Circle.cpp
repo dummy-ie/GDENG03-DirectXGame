@@ -5,7 +5,7 @@
 #include "PixelShader.h"
 #include "VertexShader.h"
 
-Circle::Circle(std::string name, void* shaderByteCode, size_t sizeShader, const float radius) : GameObject(name)
+Circle::Circle(const std::string& name, void* shaderByteCode, size_t sizeShader, const float radius) : GameObject(name)
 {
 	constexpr int numVertices = 64;
 	std::vector<Vertex> list;
@@ -19,8 +19,8 @@ Circle::Circle(std::string name, void* shaderByteCode, size_t sizeShader, const 
 		list.push_back({ {0.0f, 0.0f, 0.0f}, color, {0.0f, 0.0f, 1.0f} });
 	}
 
-	vertexBuffer = GraphicsEngine::get()->createVertexBuffer();
-	//constexpr UINT size_list = ARRAYSIZE(list);
+	vertexBuffer = GraphicsEngine::createVertexBuffer();
+	//constexpr UINT indexListSize = ARRAYSIZE(list);
 	const UINT sizeList = list.size();
 
 	vertexBuffer->load(list.data(), sizeof(Vertex), sizeList, shaderByteCode, static_cast<UINT>(sizeShader));
@@ -28,13 +28,13 @@ Circle::Circle(std::string name, void* shaderByteCode, size_t sizeShader, const 
 	Constant constants;
 	constants.time = 0;
 
-	constantBuffer = GraphicsEngine::get()->createConstantBuffer();
+	constantBuffer = GraphicsEngine::createConstantBuffer();
 	constantBuffer->load(&constants, sizeof(Constant));
 }
 
-void Circle::release() const
+Circle::~Circle()
 {
-	vertexBuffer->release();
+	GameObject::~GameObject();
 }
 
 void Circle::update(const float deltaTime)
@@ -69,10 +69,6 @@ void Circle::draw(VertexShader* vertexShader, GeometryShader* geometryShader, Pi
 	deviceContext->setConstantBuffer(vertexShader, constantBuffer);
 	deviceContext->setConstantBuffer(geometryShader, constantBuffer);
 	deviceContext->setConstantBuffer(pixelShader, constantBuffer);
-
-	deviceContext->setVertexShader(vertexShader);
-	deviceContext->setGeometryShader(geometryShader);
-	deviceContext->setPixelShader(pixelShader);
 
 	deviceContext->setVertexBuffer(vertexBuffer);
 	deviceContext->drawTriangleStrip(vertexBuffer->getSizeVertexList(), 0);

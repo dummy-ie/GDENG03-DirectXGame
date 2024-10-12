@@ -2,17 +2,50 @@
 #include <string>
 #include <iostream>
 
+#define DEBUG_LOGS true
+#define ERROR_LOGS true
+#define SUCCESS_LOGS false
+
 class DebugUtils
 {
 public:
-	static void log(const std::string& msg)
+	template <class T>
+	static void log(T* sender, const std::string& message)
 	{
-		std::cout << "[DEBUG]: " << msg << '\n';
+		if (!DEBUG_LOGS)
+			return;
+
+		std::cout << "[" << getType(sender) << " DEBUG]: " << message << '\n';
 	}
 
-	static void error(const std::string& msg)
+	template <class T>
+	static bool log(T* sender, const HRESULT result)
 	{
-		std::cout << "[ERROR]: " << msg << '\n';
+		if (FAILED(result)) {
+			const std::string message = std::system_category().message(result);
+			log(sender, message);
+			return false;
+		}
+
+		if (SUCCESS_LOGS)
+			log(sender, "Operation was successful.");
+
+		return true;
 	}
-	
+
+	template <class T>
+	static void error(T* sender, const std::string& msg)
+	{
+		if (!ERROR_LOGS)
+			return;
+
+		std::cout << getType(sender) << "[ERROR]: " << msg << '\n';
+	}
+
+private:
+	template <class T>
+	static std::string getType(T* type)
+	{
+		return typeid(*type).name();
+	}
 };

@@ -15,22 +15,23 @@ GraphicsEngine* GraphicsEngine::sharedInstance = nullptr;
 
 
 GraphicsEngine::GraphicsEngine()
-{
-}
+= default;
 
 GraphicsEngine::~GraphicsEngine()
-{
-}
+= default;
+
+GraphicsEngine::GraphicsEngine(GraphicsEngine const&)
+{}
 
 bool GraphicsEngine::init()
 {
-	D3D_DRIVER_TYPE driver_types[] =
+	D3D_DRIVER_TYPE driverTypes[] =
 	{
 		D3D_DRIVER_TYPE_HARDWARE,
 		D3D_DRIVER_TYPE_WARP,
 		D3D_DRIVER_TYPE_REFERENCE
 	};
-	UINT num_driver_types = ARRAYSIZE(driver_types);
+	UINT num_driver_types = ARRAYSIZE(driverTypes);
 
 	D3D_FEATURE_LEVEL feature_levels[] =
 	{
@@ -42,16 +43,16 @@ bool GraphicsEngine::init()
 	for (UINT driver_type_index = 0; driver_type_index < num_driver_types;)
 	{
 		res = D3D11CreateDevice(
-			NULL,
-			driver_types[driver_type_index],
-			NULL,
+			nullptr,
+			driverTypes[driver_type_index],
+			nullptr,
 			NULL,
 			feature_levels,
 			num_feature_levels,
 			D3D11_SDK_VERSION,
-			&m_d3d_device,
-			&m_feature_level,
-			&m_imm_context);
+			&d3dDevice,
+			&featureLevel,
+			&immContext);
 
 		if (SUCCEEDED(res))
 			break;
@@ -62,25 +63,25 @@ bool GraphicsEngine::init()
 	if (FAILED(res))
 		return false;
 
-	m_imm_device_context = new DeviceContext(m_imm_context);
+	immDeviceContext = new DeviceContext(immContext);
 
-	m_d3d_device->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&m_dxgi_device));
-	m_dxgi_device->GetParent(__uuidof(IDXGIAdapter), reinterpret_cast<void**>(&m_dxgi_adapter));
-	m_dxgi_adapter->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&m_dxgi_factory));
+	d3dDevice->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&dxgiDevice));
+	dxgiDevice->GetParent(__uuidof(IDXGIAdapter), reinterpret_cast<void**>(&dxgiAdapter));
+	dxgiAdapter->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&dxgiFactory));
 
 	return true;
 }
 
-bool GraphicsEngine::release()
+bool GraphicsEngine::release() const
 {
-	m_dxgi_device->Release();
-	m_dxgi_adapter->Release();
-	m_dxgi_factory->Release();
+	dxgiDevice->Release();
+	dxgiAdapter->Release();
+	dxgiFactory->Release();
 
-	m_imm_device_context->release();
+	immDeviceContext->release();
 
-	m_imm_context->Release();
-	m_d3d_device->Release();
+	immContext->Release();
+	d3dDevice->Release();
 
 	return true;
 }
@@ -90,9 +91,9 @@ SwapChain* GraphicsEngine::createSwapChain()
 	return new SwapChain();
 }
 
-DeviceContext* GraphicsEngine::getImmediateDeviceContext()
+DeviceContext* GraphicsEngine::getImmediateDeviceContext() const
 {
-	return this->m_imm_device_context;
+	return this->immDeviceContext;
 }
 
 VertexBuffer* GraphicsEngine::createVertexBuffer()
@@ -110,10 +111,10 @@ ConstantBuffer* GraphicsEngine::createConstantBuffer()
 	return new ConstantBuffer();
 }
 
-VertexShader* GraphicsEngine::createVertexShader(const void* shader_byte_code, size_t byte_code_size)
+VertexShader* GraphicsEngine::createVertexShader(const void* shaderByteCode, size_t byteCodeSize)
 {
 	VertexShader* vs = new VertexShader();
-	if (!vs->init(shader_byte_code, byte_code_size))
+	if (!vs->init(shaderByteCode, byteCodeSize))
 	{
 		vs->release();
 		return nullptr;
@@ -121,10 +122,10 @@ VertexShader* GraphicsEngine::createVertexShader(const void* shader_byte_code, s
 	return vs;
 }
 
-PixelShader* GraphicsEngine::createPixelShader(const void* shader_byte_code, size_t byte_code_size)
+PixelShader* GraphicsEngine::createPixelShader(const void* shaderByteCode, size_t byteCodeSize)
 {
 	PixelShader* ps = new PixelShader();
-	if (!ps->init(shader_byte_code, byte_code_size))
+	if (!ps->init(shaderByteCode, byteCodeSize))
 	{
 		ps->release();
 		return nullptr;
@@ -132,10 +133,10 @@ PixelShader* GraphicsEngine::createPixelShader(const void* shader_byte_code, siz
 	return ps;
 }
 
-GeometryShader* GraphicsEngine::createGeometryShader(const void* shader_byte_code, size_t byte_code_size)
+GeometryShader* GraphicsEngine::createGeometryShader(const void* shaderByteCode, const size_t byteCodeSize)
 {
 	GeometryShader* gs = new GeometryShader();
-	if (!gs->init(shader_byte_code, byte_code_size))
+	if (!gs->init(shaderByteCode, byteCodeSize))
 	{
 		gs->release();
 		return nullptr;
@@ -143,102 +144,101 @@ GeometryShader* GraphicsEngine::createGeometryShader(const void* shader_byte_cod
 	return gs;
 }
 
-bool GraphicsEngine::compileGeometryShader(const wchar_t* file_name, const char* entry_point_name,
-	void** shader_byte_code, size_t* byte_code_size)
+bool GraphicsEngine::compileGeometryShader(const wchar_t* fileName, const char* entryPointName,
+	void** shaderByteCode, size_t* byteCodeSize)
 {
-	ID3DBlob* error_blob = nullptr;
-	if (!SUCCEEDED(::D3DCompileFromFile(
-		file_name,
+	ID3DBlob* errorBlob = nullptr;
+	if (FAILED(::D3DCompileFromFile(
+		fileName,
 		nullptr,
 		nullptr,
-		entry_point_name,
+		entryPointName,
 		"gs_5_0",
 		0,
 		0,
-		&m_blob,
-		&error_blob
-	)))
+		&blob,
+		&errorBlob)))
 	{
-		if (error_blob)
+		if (errorBlob)
 		{
-			DebugUtils::error("Geometry shader compilation failed!");
-			error_blob->Release();
+			DebugUtils::error(this, "Geometry shader compilation failed!");
+			errorBlob->Release();
 		}
 
 		return false;
 	}
 
-	*shader_byte_code = m_blob->GetBufferPointer();
-	*byte_code_size = m_blob->GetBufferSize();
+	*shaderByteCode = blob->GetBufferPointer();
+	*byteCodeSize = blob->GetBufferSize();
 
 	return true;
 }
 
-bool GraphicsEngine::compileVertexShader(const wchar_t* file_name, const char* entry_point_name, void** shader_byte_code, size_t* byte_code_size)
+bool GraphicsEngine::compileVertexShader(const wchar_t* fileName, const char* entryPointName, void** shader_byte_code, size_t* byte_code_size)
 {
 	ID3DBlob* error_blob = nullptr;
-	if (!SUCCEEDED(::D3DCompileFromFile(
-		file_name,
+	if (FAILED(::D3DCompileFromFile(
+		fileName,
 		nullptr,
 		nullptr,
-		entry_point_name,
+		entryPointName,
 		"vs_5_0",
 		0,
 		0,
-		&m_blob,
+		&blob,
 		&error_blob
 	)))
 	{
 		if (error_blob)
 		{
-			DebugUtils::error("Vertex shader compilation failed!");
+			DebugUtils::error(this, "Vertex shader compilation failed!");
 			error_blob->Release();
 		}
 
 		return false;
 	}
 
-	*shader_byte_code = m_blob->GetBufferPointer();
-	*byte_code_size = m_blob->GetBufferSize();
+	*shader_byte_code = blob->GetBufferPointer();
+	*byte_code_size = blob->GetBufferSize();
 
 	return true;
 }
 
-bool GraphicsEngine::compilePixelShader(const wchar_t* file_name, const char* entry_point_name, void** shader_byte_code,
-	size_t* byte_code_size)
+bool GraphicsEngine::compilePixelShader(const wchar_t* fileName, const char* entryPointName, void** shaderByteCode,
+	size_t* byteCodeSize)
 {
-	ID3DBlob* error_blob = nullptr;
-	if (!SUCCEEDED(::D3DCompileFromFile(
-		file_name,
+	ID3DBlob* errorBlob = nullptr;
+	if (FAILED(::D3DCompileFromFile(
+		fileName,
 		nullptr,
 		nullptr,
-		entry_point_name,
+		entryPointName,
 		"ps_5_0",
 		0,
 		0,
-		&m_blob,
-		&error_blob
+		&blob,
+		&errorBlob
 	)))
 	{
-		if (error_blob)
+		if (errorBlob)
 		{
-			DebugUtils::error("Pixel shader compilation failed!");
-			error_blob->Release();
+			DebugUtils::error(this, "Pixel shader compilation failed!");
+			errorBlob->Release();
 		}
 
 		return false;
 	}
 
-	*shader_byte_code = m_blob->GetBufferPointer();
-	*byte_code_size = m_blob->GetBufferSize();
+	*shaderByteCode = blob->GetBufferPointer();
+	*byteCodeSize = blob->GetBufferSize();
 
 	return true;
 }
 
-void GraphicsEngine::releaseCompiledShader()
+void GraphicsEngine::releaseCompiledShader() const
 {
-	if (m_blob)
-		m_blob->Release();
+	if (blob)
+		blob->Release();
 }
 
 GraphicsEngine* GraphicsEngine::get()
@@ -256,7 +256,7 @@ void GraphicsEngine::initialize()
 
 void GraphicsEngine::destroy()
 {
-	if (sharedInstance != NULL)
+	if (sharedInstance != nullptr)
 		sharedInstance->release();
 
 	delete sharedInstance;

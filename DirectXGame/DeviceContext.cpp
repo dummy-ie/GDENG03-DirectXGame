@@ -9,7 +9,7 @@
 #include "IndexBuffer.h"
 #include "PixelShader.h"
 
-DeviceContext::DeviceContext(ID3D11DeviceContext* deviceContext) : m_device_context(deviceContext)
+DeviceContext::DeviceContext(ID3D11DeviceContext* deviceContext) : deviceContext(deviceContext)
 {
 
 }
@@ -19,50 +19,50 @@ DeviceContext::~DeviceContext()
 
 void DeviceContext::clearRenderTargetColor(SwapChain* swapChain, float r, float g, float b, float a)
 {
-	const FLOAT clear_color[] = { r, g, b, a };
-	m_device_context->ClearRenderTargetView(swapChain->m_rtv, clear_color);
-	m_device_context->OMSetRenderTargets(1, &swapChain->m_rtv, nullptr);
+	const FLOAT clearColor[] = { r, g, b, a };
+	deviceContext->ClearRenderTargetView(swapChain->renderTargetView, clearColor);
+	deviceContext->OMSetRenderTargets(1, &swapChain->renderTargetView, nullptr);
 }
 
-void DeviceContext::setVertexBuffer(VertexBuffer* vertex_buffer)
+void DeviceContext::setVertexBuffer(VertexBuffer* vertexBuffer)
 {
-	UINT stride = vertex_buffer->m_size_vertex;
+	UINT stride = vertexBuffer->m_size_vertex;
 	UINT offset = 0;
 
-	m_device_context->IASetVertexBuffers(0, 1, &vertex_buffer->m_buffer, &stride, &offset);
-	m_device_context->IASetInputLayout(vertex_buffer->m_layout);
+	deviceContext->IASetVertexBuffers(0, 1, &vertexBuffer->m_buffer, &stride, &offset);
+	deviceContext->IASetInputLayout(vertexBuffer->m_layout);
 }
 
-void DeviceContext::setIndexBuffer(IndexBuffer* index_buffer)
+void DeviceContext::setIndexBuffer(IndexBuffer* indexBuffer)
 {
-	m_device_context->IASetIndexBuffer(index_buffer->m_buffer, DXGI_FORMAT_R32_UINT, 0);
+	deviceContext->IASetIndexBuffer(indexBuffer->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 }
 
-void DeviceContext::drawTriangleList(UINT vertex_count, UINT start_vertex_index)
+void DeviceContext::drawTriangleList(UINT vertexCount, UINT startVertexIndex)
 {
-	m_device_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	m_device_context->Draw(vertex_count, start_vertex_index);
+	deviceContext->Draw(vertexCount, startVertexIndex);
 }
 
-void DeviceContext::drawIndexedTriangleList(UINT index_count, UINT start_vertex_index, UINT start_index_location)
+void DeviceContext::drawIndexedTriangleList(UINT indexCount, UINT startVertexIndex, UINT startIndexLocation)
 {
-	m_device_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	m_device_context->DrawIndexed(index_count, start_index_location, start_vertex_index);
+	deviceContext->DrawIndexed(indexCount, startIndexLocation, startVertexIndex);
 }
 
-void DeviceContext::drawTriangleStrip(UINT vertex_count, UINT start_vertex_index)
+void DeviceContext::drawTriangleStrip(UINT vertexCount, UINT startVertexIndex)
 {
-	m_device_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
-	m_device_context->Draw(vertex_count, start_vertex_index);
+	deviceContext->Draw(vertexCount, startVertexIndex);
 }
 
-void DeviceContext::drawLineStrip(UINT vertex_count, UINT start_vertex_index)
+void DeviceContext::drawLineStrip(UINT vertexCount, UINT startVertexIndex)
 {
-	m_device_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
-	m_device_context->Draw(vertex_count, start_vertex_index);
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP);
+	deviceContext->Draw(vertexCount, startVertexIndex);
 }
 
 void DeviceContext::setViewportSize(UINT width, UINT height)
@@ -74,43 +74,43 @@ void DeviceContext::setViewportSize(UINT width, UINT height)
 	vp.MaxDepth = 1.f;
 
 
-	m_device_context->RSSetViewports(1, &vp);
+	deviceContext->RSSetViewports(1, &vp);
 }
 
-void DeviceContext::setVertexShader(VertexShader* vertex_shader)
+void DeviceContext::setVertexShader(VertexShader* vertexShader)
 {
-	m_device_context->VSSetShader(vertex_shader->vs, nullptr, 0);
+	deviceContext->VSSetShader(vertexShader->vs, nullptr, 0);
 }
 
-void DeviceContext::setGeometryShader(GeometryShader* geometry_shader)
+void DeviceContext::setGeometryShader(GeometryShader* geometryShader)
 {
-	m_device_context->GSSetShader(geometry_shader->gs, nullptr, 0);
+	deviceContext->GSSetShader(geometryShader->gs, nullptr, 0);
 }
 
-void DeviceContext::setPixelShader(PixelShader* pixel_shader)
+void DeviceContext::setPixelShader(PixelShader* pixelShader)
 {
-	m_device_context->PSSetShader(pixel_shader->ps, nullptr, 0);
+	deviceContext->PSSetShader(pixelShader->ps, nullptr, 0);
 }
 
-void DeviceContext::setConstantBuffer(VertexShader* vertex_shader, ConstantBuffer* constant_buffer)
+void DeviceContext::setConstantBuffer(VertexShader* vertexShader, ConstantBuffer* constantBuffer)
 {
-	m_device_context->VSSetConstantBuffers(0, 1, &constant_buffer->m_buffer);
+	deviceContext->VSSetConstantBuffers(0, 1, &constantBuffer->constantBuffer);
 }
 
-void DeviceContext::setConstantBuffer(GeometryShader* geometry_shader, ConstantBuffer* constant_buffer)
+void DeviceContext::setConstantBuffer(GeometryShader* geometryShader, ConstantBuffer* constantBuffer)
 {
-	m_device_context->GSSetConstantBuffers(0, 1, &constant_buffer->m_buffer);
+	deviceContext->GSSetConstantBuffers(0, 1, &constantBuffer->constantBuffer);
 }
 
 
-void DeviceContext::setConstantBuffer(PixelShader* pixel_shader, ConstantBuffer* constant_buffer)
+void DeviceContext::setConstantBuffer(PixelShader* pixelShader, ConstantBuffer* constantBuffer)
 {
-	m_device_context->PSSetConstantBuffers(0, 1, &constant_buffer->m_buffer);
+	deviceContext->PSSetConstantBuffers(0, 1, &constantBuffer->constantBuffer);
 }
 
 bool DeviceContext::release()
 {
-	m_device_context->Release();
+	deviceContext->Release();
 	delete this;
 
 	return true;

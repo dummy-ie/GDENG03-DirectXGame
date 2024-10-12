@@ -17,7 +17,7 @@ bool VertexShader::release()
 
 bool VertexShader::init(const void* shaderByteCode, const size_t byteCodeSize)
 {
-	if (!SUCCEEDED(GraphicsEngine::get()->m_d3d_device->CreateVertexShader(shaderByteCode, byteCodeSize, nullptr, &vs)))
+	if (!SUCCEEDED(GraphicsEngine::get()->d3dDevice->CreateVertexShader(shaderByteCode, byteCodeSize, nullptr, &vs)))
 		return false;
 
 	return true;

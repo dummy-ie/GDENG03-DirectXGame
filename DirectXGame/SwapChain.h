@@ -9,13 +9,13 @@ class SwapChain
 public:
 	SwapChain();
 	~SwapChain();
-	bool init(HWND hwnd, UINT width, UINT height);
-	bool release();
-	bool present(bool vsync);
+	bool init(HWND windowHandle, UINT width, UINT height);
+	bool release() const;
+	bool present(bool vsync) const;
 
 private:
-	IDXGISwapChain* m_swap_chain;
-	ID3D11RenderTargetView* m_rtv;
+	IDXGISwapChain* swapChain;
+	ID3D11RenderTargetView* renderTargetView;
 
 	friend class DeviceContext;
 };

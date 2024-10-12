@@ -19,7 +19,7 @@ bool GeometryShader::release()
 
 bool GeometryShader::init(const void* shaderByteCode, const size_t byteCodeSize)
 {
-	if (!SUCCEEDED(GraphicsEngine::get()->m_d3d_device->CreateGeometryShader(shaderByteCode, byteCodeSize, nullptr, &gs)))
+	if (!SUCCEEDED(GraphicsEngine::get()->d3dDevice->CreateGeometryShader(shaderByteCode, byteCodeSize, nullptr, &gs)))
 		return false;
 
 	return true;

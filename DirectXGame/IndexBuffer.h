@@ -9,15 +9,15 @@ public:
 	IndexBuffer();
 	~IndexBuffer();
 
-	bool load(const void* list_indices, UINT size_list);
-	bool release();
+	bool load(const void* listIndices, UINT sizeList);
+	bool release() const;
 
-	UINT getSizeIndexList();
+	UINT getSizeIndexList() const;
 
 private:
-	UINT m_size_list;
+	UINT indexListSize;
 
-	ID3D11Buffer* m_buffer;
+	ID3D11Buffer* indexBuffer;
 
 	friend class DeviceContext;
 };

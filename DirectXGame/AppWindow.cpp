@@ -17,21 +17,19 @@ void AppWindow::initialize()
 
 void AppWindow::destroy()
 {
-	if (sharedInstance != NULL)
+	if (sharedInstance != nullptr)
 		sharedInstance->release();
 
 	delete sharedInstance;
 }
 
 AppWindow::AppWindow()
-{
-}
+= default;
 
 AppWindow::~AppWindow()
-{
-}
+= default;
 
-void AppWindow::onKeyDown(int key)
+void AppWindow::onKeyDown(const int key)
 {
 	switch (key)
 	{
@@ -40,7 +38,7 @@ void AppWindow::onKeyDown(int key)
 	}
 }
 
-void AppWindow::onKeyUp(int key)
+void AppWindow::onKeyUp(const int key)
 {
 	switch (key)
 	{
@@ -78,7 +76,7 @@ void AppWindow::onCreate()
 
 	//GraphicsEngine::get()->init();
 	GraphicsEngine::initialize();
-	swapChain = GraphicsEngine::get()->createSwapChain();
+	swapChain = GraphicsEngine::createSwapChain();
 
 	const RECT rc = this->getClientWindowRect();
 	swapChain->init(this->m_Hwnd, rc.right - rc.left, rc.bottom - rc.top);
@@ -88,21 +86,28 @@ void AppWindow::onCreate()
 	void* shaderByteCode = nullptr;
 	size_t byteCodeSize = 0;
 
+	DebugUtils::log(this, "Vertex shader compilation");
 	GraphicsEngine::get()->compileVertexShader(L"VertexShader.hlsl", "main", &shaderByteCode, &byteCodeSize);
-	vs = GraphicsEngine::get()->createVertexShader(shaderByteCode, byteCodeSize);
+	vertexShader = GraphicsEngine::createVertexShader(shaderByteCode, byteCodeSize);
 
-	DebugUtils::log("emplacing circle to vector");
-	Circle* c = new Circle("circle", shaderByteCode, byteCodeSize, 0.5f);
-	circleVector.push_back(c);
+	// Insert all GameObjects here
+
+	Circle* circle = new Circle("circle1", shaderByteCode, byteCodeSize, 0.5f);
+	gameObjectsVector.push_back(circle);
+
+	Cube* cube = new Cube("cube", shaderByteCode, byteCodeSize);
+	gameObjectsVector.push_back(cube);
 
 	GraphicsEngine::get()->releaseCompiledShader();
 
+	DebugUtils::log(this, "Geometry shader compilation");
 	GraphicsEngine::get()->compileGeometryShader(L"GeometryShader.hlsl", "main", &shaderByteCode, &byteCodeSize);
-	gs = GraphicsEngine::get()->createGeometryShader(shaderByteCode, byteCodeSize);
+	geometryShader = GraphicsEngine::createGeometryShader(shaderByteCode, byteCodeSize);
 	GraphicsEngine::get()->releaseCompiledShader();
 
+	DebugUtils::log(this, "Pixel shader compilation");
 	GraphicsEngine::get()->compilePixelShader(L"PixelShader.hlsl", "main", &shaderByteCode, &byteCodeSize);
-	ps = GraphicsEngine::get()->createPixelShader(shaderByteCode, byteCodeSize);
+	pixelShader = GraphicsEngine::createPixelShader(shaderByteCode, byteCodeSize);
 	GraphicsEngine::get()->releaseCompiledShader();
 
 	// qList[0] = new Quad(
@@ -128,41 +133,38 @@ void AppWindow::onCreate()
 
 void AppWindow::onUpdate()
 {
-
+	//DebugUtils::log(this, "Updating window");
 	Window::onUpdate();
+	//DebugUtils::log(this, "Updating input system");
 	InputSystem::get()->update();
 
-	ticks += EngineTime::getDeltaTime() * 1.0f;
+	ticks += static_cast<float>(EngineTime::getDeltaTime()) * 1.0f;
 
-	GraphicsEngine::get()->getImmediateDeviceContext()->setVertexShader(vs);
-	GraphicsEngine::get()->getImmediateDeviceContext()->setGeometryShader(gs);
-	GraphicsEngine::get()->getImmediateDeviceContext()->setPixelShader(ps);
+	//DebugUtils::log(this, "Setting shaders");
+	GraphicsEngine::get()->getImmediateDeviceContext()->setVertexShader(vertexShader);
+	GraphicsEngine::get()->getImmediateDeviceContext()->setGeometryShader(geometryShader);
+	GraphicsEngine::get()->getImmediateDeviceContext()->setPixelShader(pixelShader);
 
+	//DebugUtils::log(this, "Clear render target");
 	GraphicsEngine::get()->getImmediateDeviceContext()->clearRenderTargetColor(
 		this->swapChain,
-		0.15,
-		0.2,
-		0.60,
-		1);
+		0.15f,
+		0.2f,
+		0.60f,
+		1.f);
 
 	const RECT rc = this->getClientWindowRect();
 	GraphicsEngine::get()->getImmediateDeviceContext()->setViewportSize(rc.right - rc.left, rc.bottom - rc.top);
 
-	/*for (Quad* q : qList)
-	{
-		q->draw(EngineTime::getDeltaTime(), getClientWindowRect());
-	}*/
+	GraphicsEngine::get()->getImmediateDeviceContext()->setVertexShader(vertexShader);
+	GraphicsEngine::get()->getImmediateDeviceContext()->setGeometryShader(geometryShader);
+	GraphicsEngine::get()->getImmediateDeviceContext()->setPixelShader(pixelShader);
 
-	/*for (Cube* c : cList)
+	//DebugUtils::log(this, "update and draw circles");
+	for (GameObject* gameObject : gameObjectsVector)
 	{
-		c->draw(EngineTime::getDeltaTime(), getClientWindowRect());
-	}*/
-
-	//DebugUtils::log("update and draw circles");
-	for (Circle* c : circleVector)
-	{
-		c->update(EngineTime::getDeltaTime());
-		c->draw(vs, gs, ps, getClientWindowRect());
+		gameObject->update(EngineTime::getDeltaTime());
+		gameObject->draw(vertexShader, geometryShader, pixelShader, getClientWindowRect());
 	}
 
 	swapChain->present(true);
@@ -174,8 +176,8 @@ void AppWindow::onDestroy()
 
 	//vertexBuffer->release();
 	swapChain->release();
-	//vs->release();
-	//ps->release();
+	vertexShader->release();
+	pixelShader->release();
 
 	//GraphicsEngine::get()->release();
 	GraphicsEngine::destroy();

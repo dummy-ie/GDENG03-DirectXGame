@@ -6,32 +6,20 @@
 #include "Vectors.h"
 #include "Vertex.h"
 #include "Constant.h"
+#include "GameObject.h"
 
-class Cube
+class Cube : public GameObject
 {
 public:
 
-	explicit Cube(
-		Vec2 size = { 0.1f, 0.1f },
-		Vector3D pos = { 0.0f, 0.0f, 0.0f },
-		Vector3D pos1 = { 0.0f, 0.0f, 0.0f },
-		Vector3D color = Vector3D(1.0f, 1.0f, 1.0f));
+	Cube(const std::string& name, void* shaderByteCode, size_t sizeShader);
+	~Cube() override;
 
-	void release() const;
-	void draw(float deltaTime, RECT clientWindow);
+	void update(float deltaTime) override;
+	void draw(VertexShader* vertexShader, GeometryShader* geometryShader, PixelShader* pixelShader, RECT clientWindow) override;
 
 private:
-	float m_delta_pos = 0;
-	float m_delta_scale = 0;
-	Vec2 size;
-	Vector3D pos;
-	Vector3D pos1;
-	Vector3D color;
-	float angle = 0;
-	VertexBuffer* vb;
-	IndexBuffer* ib;
-	ConstantBuffer* cb;
-	VertexShader* vs;
-	GeometryShader* gs;
-	PixelShader* ps;
+	float deltaPos = 0.0f;
+	float deltaScale = 0.0f;
+	float animationSpeed = 1.0f;
 };

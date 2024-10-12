@@ -7,12 +7,12 @@ class ConstantBuffer
 {
 public:
 	ConstantBuffer() = default;
-	bool load(void* buffer, UINT size_buffer);
-	void update(DeviceContext* context, void* buffer);
-	bool release();
+	bool load(const void* buffer, UINT sizeBuffer);
+	void update(const DeviceContext* context, const void* buffer) const;
+	bool release() const;
 
 private:
-	ID3D11Buffer* m_buffer;
+	ID3D11Buffer* constantBuffer;
 
 	friend class DeviceContext;
 };

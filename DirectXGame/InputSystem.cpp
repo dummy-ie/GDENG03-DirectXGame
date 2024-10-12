@@ -5,26 +5,24 @@
 
 
 InputSystem::InputSystem()
-{
-}
+= default;
 
 
 InputSystem::~InputSystem()
-{
-}
+= default;
 
 void InputSystem::update()
 {
-	if (::GetKeyboardState(m_keys_state))
+	if (::GetKeyboardState(keysState))
 	{
 		for (unsigned int i = 0; i < 256; i++)
 		{
 			// KEY IS DOWN
-			if (m_keys_state[i] & 0x80)
+			if (keysState[i] & 0x80)
 			{
-				std::unordered_set<InputListener*>::iterator it = m_set_listeners.begin();
+				std::unordered_set<InputListener*>::iterator it = setListeners.begin();
 
-				while (it != m_set_listeners.end())
+				while (it != setListeners.end())
 				{
 					(*it)->onKeyDown(i);
 					++it;
@@ -32,11 +30,11 @@ void InputSystem::update()
 			}
 			else // KEY IS UP
 			{
-				if (m_keys_state[i] != m_old_keys_state[i])
+				if (keysState[i] != oldKeysState[i])
 				{
-					std::unordered_set<InputListener*>::iterator it = m_set_listeners.begin();
+					std::unordered_set<InputListener*>::iterator it = setListeners.begin();
 
-					while (it != m_set_listeners.end())
+					while (it != setListeners.end())
 					{
 						(*it)->onKeyUp(i);
 						++it;
@@ -47,18 +45,18 @@ void InputSystem::update()
 
 		}
 		// store current keys state to old keys state buffer
-		::memcpy(m_old_keys_state, m_keys_state, sizeof(unsigned char) * 256);
+		::memcpy(oldKeysState, keysState, sizeof(unsigned char) * 256);
 	}
 }
 
 void InputSystem::addListener(InputListener* listener)
 {
-	m_set_listeners.insert(listener);
+	setListeners.insert(listener);
 }
 
 void InputSystem::removeListener(InputListener* listener)
 {
-	m_set_listeners.erase(listener);
+	setListeners.erase(listener);
 }
 
 InputSystem* InputSystem::get()

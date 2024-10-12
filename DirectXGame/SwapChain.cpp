@@ -1,16 +1,16 @@
 #include "SwapChain.h"
 
+#include "DebugUtils.h"
+
 SwapChain::SwapChain()
-{
-}
+= default;
 
 SwapChain::~SwapChain()
-{
-}
+= default;
 
-bool SwapChain::init(HWND hwnd, UINT width, UINT height)
+bool SwapChain::init(const HWND windowHandle, const UINT width, const UINT height)
 {
-	ID3D11Device* device = GraphicsEngine::get()->m_d3d_device;
+	ID3D11Device* device = GraphicsEngine::get()->d3dDevice;
 	DXGI_SWAP_CHAIN_DESC desc;
 	ZeroMemory(&desc, sizeof(desc));
 	desc.BufferCount = 1;
@@ -20,23 +20,23 @@ bool SwapChain::init(HWND hwnd, UINT width, UINT height)
 	desc.BufferDesc.RefreshRate.Numerator = 60;
 	desc.BufferDesc.RefreshRate.Denominator = 1;
 	desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	desc.OutputWindow = hwnd;
+	desc.OutputWindow = windowHandle;
 	desc.SampleDesc.Count = 1;
 	desc.SampleDesc.Quality = 0;
 	desc.Windowed = TRUE;
 
-	HRESULT hr = GraphicsEngine::get()->m_dxgi_factory->CreateSwapChain(device, &desc, &m_swap_chain);
+	HRESULT hr = DebugUtils::log(this, GraphicsEngine::get()->dxgiFactory->CreateSwapChain(device, &desc, &swapChain));
 
 	if (FAILED(hr))
 		return false;
 
-	ID3D11Texture2D* buffer = NULL;
-	hr = m_swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&buffer);
+	ID3D11Texture2D* buffer = nullptr;
+	hr = DebugUtils::log(this, swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(&buffer)));
 
 	if (FAILED(hr))
 		return false;
 
-	hr = device->CreateRenderTargetView(buffer, NULL, &m_rtv);
+	hr = device->CreateRenderTargetView(buffer, nullptr, &renderTargetView);
 	buffer->Release();
 
 	if (FAILED(hr))
@@ -45,17 +45,17 @@ bool SwapChain::init(HWND hwnd, UINT width, UINT height)
 	return true;
 }
 
-bool SwapChain::release()
+bool SwapChain::release() const
 {
-	m_swap_chain->Release();
+	swapChain->Release();
 	delete this;
 
 	return true;
 }
 
-bool SwapChain::present(bool vsync)
+bool SwapChain::present(const bool vsync) const
 {
-	m_swap_chain->Present(vsync, NULL);
+	DebugUtils::log(this, swapChain->Present(vsync, NULL));
 
 	return true;
 }

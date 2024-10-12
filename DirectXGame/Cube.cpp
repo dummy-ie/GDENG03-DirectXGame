@@ -4,9 +4,9 @@
 #include "PixelShader.h"
 #include "VertexShader.h"
 
-Cube::Cube(const Vec2 size, const Vector3D pos, const Vector3D pos1, const Vector3D color) : size(size), pos(pos), pos1(pos1), color(color)
+Cube::Cube(const std::string& name, void* shaderByteCode, size_t sizeShader) : GameObject(name)
 {
-	Vertex vertex_list[] =
+	Vertex vertexList[] =
 	{
 		//X - Y - Z
 		//FRONT FACE
@@ -23,13 +23,10 @@ Cube::Cube(const Vec2 size, const Vector3D pos, const Vector3D pos1, const Vecto
 
 	};
 
-	void* shader_byte_code = nullptr;
-	size_t byte_code_size = 0;
+	vertexBuffer = GraphicsEngine::createVertexBuffer();
+	constexpr UINT sizeList = ARRAYSIZE(vertexList);
 
-	vb = GraphicsEngine::get()->createVertexBuffer();
-	constexpr UINT size_list = ARRAYSIZE(vertex_list);
-
-	unsigned int index_list[] =
+	unsigned int indexList[] =
 	{
 		//FRONT SIDE
 		0,1,2,  //FIRST TRIANGLE
@@ -51,94 +48,78 @@ Cube::Cube(const Vec2 size, const Vector3D pos, const Vector3D pos1, const Vecto
 		1,0,7
 	};
 
-	ib = GraphicsEngine::get()->createIndexBuffer();
-	constexpr UINT size_index_list = ARRAYSIZE(index_list);
+	indexBuffer = GraphicsEngine::createIndexBuffer();
+	constexpr UINT sizeIndexList = ARRAYSIZE(indexList);
 
-	ib->load(index_list, size_index_list);
+	indexBuffer->load(indexList, sizeIndexList);
+	vertexBuffer->load(
+		vertexList,
+		sizeof(Vertex),
+		sizeList,
+		shaderByteCode,
+		static_cast<UINT>(sizeShader));
 
-	GraphicsEngine::get()->compileVertexShader(L"VertexShader.hlsl", "main", &shader_byte_code, &byte_code_size);
-	vs = GraphicsEngine::get()->createVertexShader(shader_byte_code, byte_code_size);
-	vb->load(vertex_list, sizeof(Vertex), size_list, shader_byte_code, static_cast<UINT>(byte_code_size));
-	GraphicsEngine::get()->releaseCompiledShader();
+	Constant constants;
+	constants.time = 0;
 
-	GraphicsEngine::get()->compileGeometryShader(L"GeometryShader.hlsl", "main", &shader_byte_code, &byte_code_size);
-	gs = GraphicsEngine::get()->createGeometryShader(shader_byte_code, byte_code_size);
-	GraphicsEngine::get()->releaseCompiledShader();
-
-	GraphicsEngine::get()->compilePixelShader(L"PixelShader.hlsl", "main", &shader_byte_code, &byte_code_size);
-	ps = GraphicsEngine::get()->createPixelShader(shader_byte_code, byte_code_size);
-	GraphicsEngine::get()->releaseCompiledShader();
-
-	Constant cc;
-	cc.time = 0;
-
-	cb = GraphicsEngine::get()->createConstantBuffer();
-	cb->load(&cc, sizeof(Constant));
+	constantBuffer = GraphicsEngine::createConstantBuffer();
+	constantBuffer->load(&constants, sizeof(Constant));
 }
 
-void Cube::release() const
+Cube::~Cube()
 {
-	vb->release();
-	ib->release();
-	cb->release();
-	vs->release();
-	ps->release();
+	GameObject::~GameObject();
 }
 
-void Cube::draw(float deltaTime, RECT clientWindow)
+void Cube::update(float deltaTime)
 {
-	this->angle += 1.57f * deltaTime;
+	deltaPos += deltaTime / 10.0f;
+	if (deltaPos > 1.0f)
+		deltaPos = 0;
 
-	m_delta_pos += deltaTime / 10.0f;
-	if (m_delta_pos > 1.0f)
-		m_delta_pos = 0;
+	deltaScale += deltaTime / 1.0f;
+}
 
-	m_delta_scale += deltaTime / 1.0f;
+void Cube::draw(VertexShader* vertexShader, GeometryShader* geometryShader, PixelShader* pixelShader, RECT clientWindow)
+{
+	DeviceContext* deviceContext = GraphicsEngine::get()->getImmediateDeviceContext();
+	Constant constants;
+	Matrix4x4 tempMatrix;
+	const float windowWidth = (clientWindow.right - clientWindow.left) / 400.f;
+	const float windowHeight = (clientWindow.bottom - clientWindow.top) / 400.f;
 
-	Constant cc;
-	//cc.world.setTranslation(Vector3D(0, 0, 0));
-	Matrix4x4 temp;
+	constants.world.setTranslation(localPosition);
+	constants.world.setScale(localScale);
 
-	// cc.world.setScale(Vector3D::lerp(Vector3D(0.5, 0.5, 0), Vector3D(1.0f, 1.0f, 0), (sin(m_delta_scale) + 1.0f) / 2.0f));
-	// temp.setTranslation(Vector3D::lerp(pos, pos1, m_delta_pos));
-	//
-	// cc.world *= temp;
+	tempMatrix.setIdentity();
+	tempMatrix.setRotationZ(localRotation.z);
+	constants.world *= tempMatrix;
 
-	cc.world.setScale({ 1, 1, 1 });
+	tempMatrix.setIdentity();
+	tempMatrix.setRotationY(localRotation.y);
+	constants.world *= tempMatrix;
 
-	temp.setIdentity();
-	temp.setRotationZ(m_delta_scale);
-	cc.world *= temp;
+	tempMatrix.setIdentity();
+	tempMatrix.setRotationX(localRotation.x);
+	constants.world *= tempMatrix;
 
-	temp.setIdentity();
-	temp.setRotationY(m_delta_scale);
-	cc.world *= temp;
-
-	temp.setIdentity();
-	temp.setRotationX(m_delta_scale);
-	cc.world *= temp;
-
-	cc.view.setIdentity();
-	cc.proj.setOrthoLH(
-		(clientWindow.right - clientWindow.left) / 400.f,
-		(clientWindow.bottom - clientWindow.top) / 400.f,
+	constants.view.setIdentity();
+	constants.proj.setOrthoLH(
+		windowWidth,
+		windowHeight,
 		-4.0f,
 		4.0f);
-	cc.time = angle;
+	constants.time = 0;
 
-	cb->update(GraphicsEngine::get()->getImmediateDeviceContext(), &cc);
+	constantBuffer->update(deviceContext, &constants);
 
-	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(vs, cb);
-	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(gs, cb);
-	GraphicsEngine::get()->getImmediateDeviceContext()->setConstantBuffer(ps, cb);
+	deviceContext->setConstantBuffer(vertexShader, constantBuffer);
+	deviceContext->setConstantBuffer(geometryShader, constantBuffer);
+	deviceContext->setConstantBuffer(pixelShader, constantBuffer);
 
-	GraphicsEngine::get()->getImmediateDeviceContext()->setVertexShader(vs);
-	GraphicsEngine::get()->getImmediateDeviceContext()->setGeometryShader(gs);
-	GraphicsEngine::get()->getImmediateDeviceContext()->setPixelShader(ps);
+	deviceContext->setVertexBuffer(vertexBuffer);
+	deviceContext->setIndexBuffer(indexBuffer);
 
-	GraphicsEngine::get()->getImmediateDeviceContext()->setVertexBuffer(vb);
-	GraphicsEngine::get()->getImmediateDeviceContext()->setIndexBuffer(ib);
-
-	GraphicsEngine::get()->getImmediateDeviceContext()->drawIndexedTriangleList(ib->getSizeIndexList(), 0, 0);
-	// GraphicsEngine::get()->getImmediateDeviceContext()->drawTriangleStrip(vb->getSizeVertexList(), 0);
+	deviceContext->drawIndexedTriangleList(indexBuffer->getSizeIndexList(), 0, 0);
+	// deviceContext->drawTriangleStrip(vertexBuffer->getSizeVertexList(), 0);
 }
